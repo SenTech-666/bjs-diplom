@@ -1,12 +1,12 @@
 'use strict';
 
-/* ===== 1. Создаём все виджеты ===== */
+
 const logoutButton     = new LogoutButton();
 const ratesBoard       = new RatesBoard();
 const moneyManager     = new MoneyManager();
 const favoritesWidget  = new FavoritesWidget();
 
-/* ===== 2. Функции обновления ===== */
+
 const updateRates = () => {
     ApiConnector.getStocks(resp => {
         if (resp.success) {
@@ -26,16 +26,16 @@ const updateFavorites = () => {
     });
 };
 
-// Обновляем только курсы и избранное (профиль обновляем вручную из ответа!)
+
 const refreshRatesAndFavorites = () => {
     updateRates();
     updateFavorites();
 };
 
-/* ===== 3. Выход ===== */
+
 logoutButton.action = () => ApiConnector.logout(resp => resp.success && location.reload());
 
-/* ===== 4. Первая загрузка ===== */
+
 ApiConnector.current(resp => {
     if (resp.success) ProfileWidget.showProfile(resp.data);
 });
@@ -43,13 +43,13 @@ updateRates();
 updateFavorites();
 setInterval(updateRates, 60000);
 
-/* ===== 5. ДЕНЕЖНЫЕ ОПЕРАЦИИ — ГЛАВНОЕ ИСПРАВЛЕНИЕ! ===== */
+
 const handleMoneyOperation = (response, successMessage) => {
     if (response.success) {
-        // ВАЖНО: используем ДАННЫЕ ИЗ ОТВЕТА — они уже актуальные!
+        
         ProfileWidget.showProfile(response.data);
         
-        // Обновляем только курсы и избранное
+       
         refreshRatesAndFavorites();
         
         moneyManager.setMessage(true, successMessage);
